@@ -580,15 +580,34 @@ class Netgear():
         theLog = "Starting a speed test"
 
         _LOGGER.info(theLog)
-        success, response = self._make_request(
+        if self.config_started:
+            _LOGGER.error(
+                "Inconsistant configuration state, "
+                "configuration already started"
+                )
+            return False
+
+        if not self.config_start():
+            _LOGGER.error("Could not start configuration")
+            return False
+
+        success, _ = self._make_request(
             c.SERVICE_ADVANCED_QOS,
             c.SET_SPEED_TEST_START
             )
 
         if not success:
-            return "Failure"
+            _LOGGER.error("Could not successfully start speed test")
+            return False
 
-        return "Success"
+        if not self.config_finish():
+            _LOGGER.error(
+                "Inconsistant configuration state, "
+                "configuration already finished"
+                )
+            return False
+
+        return True
 
     def get_speed_test_result(self):
         """Get the speed test result and return dict."""
