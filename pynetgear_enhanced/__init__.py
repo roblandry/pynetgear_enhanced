@@ -183,7 +183,24 @@ class Netgear():
 
     # def logout(self):
     # def reboot(self):
-    # def check_new_firmware(self):
+
+    def check_new_firmware(self):
+        """Parse CheckNewFirmware and return dict."""
+        theLog = "Check for new firmware"
+        parseNode = f".//{c.CHECK_NEW_FIRMWARE}Response"
+        toParse = [
+            'CurrentVersion',
+            'NewVersion',
+            'ReleaseNote'
+        ]
+
+        theInfo = self._get(
+            theLog, c.SERVICE_DEVICE_CONFIG,
+            c.CHECK_NEW_FIRMWARE, parseNode, toParse, True
+            )
+
+        return theInfo
+
     # def update_new_firmware(self):
 
     def config_start(self):

@@ -11,6 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description='ADD YOUR DESCRIPTION HERE')
     parser.add_argument('-p', '--password', help='Your Password', required=True)
     parser.add_argument('--info', help='getInfo', required=False, action='store_true')
+    parser.add_argument('--check_fw', help='check_new_firmware', required=False, action='store_true')
     parser.add_argument('--attached_devices', help='get_attached_devices', required=False, action='store_true')
     parser.add_argument('--attached_devices2', help='get_attached_devices_2', required=False, action='store_true')
     parser.add_argument('--traffic_meter', help='get_traffic_meter', required=False, action='store_true')
@@ -40,6 +41,8 @@ def main():
         netgear = Netgear(args.password)
     if args.info:
         print(netgear.getInfo())
+    if args.check_fw:
+        print(netgear.check_new_firmware())
     if args.attached_devices:
         print(netgear.get_attached_devices())
     if args.attached_devices2:
