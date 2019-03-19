@@ -1,5 +1,5 @@
 """Run PyNetgear from the command-line."""
-from pynetgear import Netgear
+from . import Netgear
 import sys
 import argparse
 import time

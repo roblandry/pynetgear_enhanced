@@ -7,7 +7,7 @@ import re
 import sys
 import requests
 import logging
-from pynetgear.const import SERVICE_PREFIX
+from .const import SERVICE_PREFIX
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -8,8 +8,8 @@ import logging
 from datetime import timedelta
 import requests
 
-import pynetgear.const as c
-import pynetgear.helpers as h
+from . import const as c
+from . import helpers as h
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -353,7 +353,7 @@ class Netgear():
             username=self.username, password=self.password
             )
 
-        success, _ = self._make_request(
+        success, response = self._make_request(
             c.SERVICE_PARENTAL_CONTROL, c.LOGIN_OLD, None, body, False
             )
 
