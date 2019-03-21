@@ -48,11 +48,11 @@ GET_BLOCK_DEVICE_ENABLE_STATUS = 'GetBlockDeviceEnableStatus'
 SET_BLOCK_DEVICE_BY_MAC = 'SetBlockDeviceByMAC'
 
 # TRAFFIC METER
+GET_TRAFFIC_METER_STATISTICS = 'GetTrafficMeterStatistics'
 ENABLE_TRAFFIC_METER = 'EnableTrafficMeter'
 GET_TRAFFIC_METER_ENABLED = 'GetTrafficMeterEnabled'
 # SET_TRAFFIC_METER_OPTIONS = 'SetTrafficMeterOptions'
 GET_TRAFFIC_METER_OPTIONS = 'GetTrafficMeterOptions'
-GET_TRAFFIC_METER_STATISTICS = 'GetTrafficMeterStatistics'
 
 # ---------------------
 # SERVICE_PARENTAL_CONTROL
@@ -102,8 +102,8 @@ SET_5G_GUEST_ACCESS_ENABLED_2 = 'Set5GGuestAccessEnabled2'  # 5G-2 R8000
 GET_5G_GUEST_ACCESS_ENABLED_2 = 'Get5GGuestAccessEnabled2'  # 5G-2 R8000
 GET_WPA_SECURITY_KEYS = 'GetWPASecurityKeys'
 GET_5G_WPA_SECURITY_KEYS = 'Get5GWPASecurityKeys'
-GET_5G_INFO = 'Get5GInfo'
 GET_2G_INFO = 'GetInfo'
+GET_5G_INFO = 'Get5GInfo'
 # SET_5G_WLAN_WPA_PSK_BY_PASSPHRASE = 'Set5GWLANWPAPSKByPassphrase'
 GET_AVAILABLE_CHANNEL = 'GetAvailableChannel'
 # SET_GUEST_ACCESS_NETWORK = 'SetGuestAccessNetwork'

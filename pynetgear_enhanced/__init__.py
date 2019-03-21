@@ -155,7 +155,7 @@ class Netgear():
 
         return theInfo
 
-    def _set(self, theLog, theRequest, test=False):
+    def _set(self, theLog, theRequest, test):
 
         logStart = theLog[0]
         logFail = theLog[1]
@@ -224,7 +224,7 @@ class Netgear():
     # def logout(self):
     # def reboot(self):
 
-    def check_new_firmware(self, test):
+    def check_new_firmware(self, test=False):
         """Parse CheckNewFirmware and return dict."""
         theLog = "Check for new firmware"
         parseNode = f".//{c.CHECK_NEW_FIRMWARE}Response"
@@ -320,7 +320,7 @@ class Netgear():
 
         return True
 
-    def get_traffic_meter_enabled(self, test):
+    def get_traffic_meter_enabled(self, test=False):
         """Parse GetTrafficMeterEnabled and return dict."""
         theLog = "Get DNS Masq Device ID"
         parseNode = f".//{c.GET_TRAFFIC_METER_ENABLED}Response"
@@ -335,7 +335,7 @@ class Netgear():
 
         return theInfo
 
-    def get_traffic_meter_options(self, test):
+    def get_traffic_meter_options(self, test=False):
         """Parse GetTrafficMeterOptions and return dict."""
         theLog = "Get Traffic Meter Options"
         parseNode = f".//{c.GET_TRAFFIC_METER_OPTIONS}Response"
@@ -354,7 +354,7 @@ class Netgear():
 
         return theInfo
 
-    def get_traffic_meter_statistics(self, test):
+    def get_traffic_meter_statistics(self, test=False):
         """Parse GetTrafficMeterStatistics and return dict."""
         theLog = "Get Traffic Meter Statistics"
         parseNode = f".//{c.GET_TRAFFIC_METER_STATISTICS}Response"
@@ -383,7 +383,7 @@ class Netgear():
 
         return {t: h.parse_text(value) for t, value in theInfo.items()}
 
-    def enable_traffic_meter(self, value, test):
+    def enable_traffic_meter(self, value, test=False):
         """Set EnableTrafficMeter."""
         theLog = {}
         theLog[0] = "Enabling Traffic Meter"
@@ -422,7 +422,7 @@ class Netgear():
 
         return success
 
-    def get_parental_control_enable_status(self, test):
+    def get_parental_control_enable_status(self, test=False):
         """Parse GetEnableStatus and return dict."""
         theLog = "Get Parent Control Enable Status"
         parseNode = f".//{c.GET_PARENTAL_CONTROL_ENABLE_STATUS}Response"
@@ -435,7 +435,7 @@ class Netgear():
 
         return theInfo
 
-    def enable_parental_control(self, value, test):
+    def enable_parental_control(self, value, test=False):
         """Set EnableParentalControl."""
         theLog = {}
         theLog[0] = "Enabling Parental Control"
@@ -453,7 +453,7 @@ class Netgear():
 
         return theResponse
 
-    def get_all_mac_addresses(self, test):
+    def get_all_mac_addresses(self, test=False):
         """Parse GetAllMACAddresses and return dict."""
         theLog = "Get All MAC Addresses"
         parseNode = f".//{c.GET_ALL_MAC_ADDRESSES}Response"
@@ -468,7 +468,7 @@ class Netgear():
 
         return theInfo
 
-    def get_dns_masq_device_id(self, test):
+    def get_dns_masq_device_id(self, test=False):
         """Parse GetDNSMasqDeviceID and return dict."""
         theLog = "Get DNS Masq Device ID"
         parseNode = f".//{c.GET_DNS_MASQ_DEVICE_ID}Response"
@@ -489,7 +489,7 @@ class Netgear():
     ##########################################################################
     # SERVICE_DEVICE_INFO
     ##########################################################################
-    def getInfo(self, test):
+    def getInfo(self, test=False):
         """Parse GetInfo and return dict."""
         theLog = "Get Info"
         parseNode = f".//{c.GET_INFO}Response"
@@ -507,7 +507,7 @@ class Netgear():
 
         return theInfo
 
-    def getSupportFeatureListXML(self, test):
+    def getSupportFeatureListXML(self, test=False):
         """Parse getSupportFeatureListXML and return dict."""
         theLog = "Get Support Feature List"
         parseNode = (
@@ -529,7 +529,7 @@ class Netgear():
 
         return theInfo
 
-    def get_attached_devices(self, test):  # noqa
+    def get_attached_devices(self, test=False):  # noqa
         """
         Return list of connected devices to the router.
 
@@ -605,7 +605,7 @@ class Netgear():
 
         return devices
 
-    def get_attached_devices_2(self, test):  # noqa
+    def get_attached_devices_2(self, test=False):  # noqa
         """
         Return list of connected devices to the router with details.
 
@@ -651,7 +651,7 @@ class Netgear():
     ##########################################################################
     # SERVICE_ADVANCED_QOS
     ##########################################################################
-    def set_speed_test_start(self, test):
+    def set_speed_test_start(self, test=False):
         """Start the speed test."""
         theLog = {}
         theLog[0] = "Starting a speed test"
@@ -668,7 +668,7 @@ class Netgear():
 
         return theResponse
 
-    def get_speed_test_result(self, test):
+    def get_speed_test_result(self, test=False):
         """Get the speed test result and return dict."""
         # Response Code = 1 means in progress
         theLog = "Get Speed Test Result"
@@ -686,7 +686,7 @@ class Netgear():
 
         return theInfo
 
-    def getQoSEnableStatus(self, test):
+    def getQoSEnableStatus(self, test=False):
         """Parse getQoSEnableStatus and return dict."""
         theLog = "Get QOS Enable Status"
         parseNode = f".//{c.GET_QOS_ENABLE_STATUS}Response"
@@ -701,7 +701,7 @@ class Netgear():
 
         return theInfo
 
-    def set_qos_enable_status(self, value, test):
+    def set_qos_enable_status(self, value, test=False):
         """Set SetQoSEnableStatus."""
         theLog = {}
         theLog[0] = "Setting Guest Access Enabled"
@@ -719,7 +719,7 @@ class Netgear():
 
         return theResponse
 
-    def get_bandwidth_control_options(self, test):
+    def get_bandwidth_control_options(self, test=False):
         """Parse GetBandwidthControlOptions and return dict."""
         theLog = "Get Bandwidth Control Options"
         parseNode = f".//{c.GET_BANDWIDTH_CONTROL_OPTIONS}Response"
@@ -737,7 +737,7 @@ class Netgear():
     # def set_bandwidth_control_options(self):
 
     # Does Not Work
-    def get_current_app_bandwidth(self, test):
+    def get_current_app_bandwidth(self, test=False):
         """Parse GetCurrentAppBandwidth and return dict."""
         theLog = "Get Current App Bandwidth"
         parseNode = f".//{c.GET_CURRENT_APP_BANDWIDTH}Response"
@@ -751,7 +751,7 @@ class Netgear():
         return theInfo
 
     # Does Not Work
-    def get_current_device_bandwidth(self, test):
+    def get_current_device_bandwidth(self, test=False):
         """Parse GetCurrentDeviceBandwidth and return dict."""
         theLog = "Get Current Device Bandwidth"
         parseNode = f".//{c.GET_CURRENT_DEVICE_BANDWIDTH}Response"
@@ -765,7 +765,7 @@ class Netgear():
         return theInfo
 
     # Does Not Work
-    def get_current_app_bandwidth_by_mac(self, test):
+    def get_current_app_bandwidth_by_mac(self, test=False):
         """Parse GetCurrentAppBandwidthByMAC and return dict."""
         theLog = "Get Current Device Bandwidth by MAC"
         parseNode = f".//{c.GET_CURRENT_APP_BANDWIDTH_BY_MAC}Response"
@@ -781,7 +781,7 @@ class Netgear():
     ##########################################################################
     # SERVICE_WLAN_CONFIGURATION
     ##########################################################################
-    def get_guest_access_enabled(self, test):
+    def get_guest_access_enabled(self, test=False):
         """Parse GetGuestAccessEnabled and return dict."""
         theLog = "Get Guest Access Enabled"
         parseNode = f".//{c.GET_GUEST_ACCESS_ENABLED}Response"
@@ -795,7 +795,7 @@ class Netgear():
         return theInfo
 
     # Need to handle different endpoints
-    def get_5g1_guest_access_enabled(self, test):
+    def get_5g1_guest_access_enabled(self, test=False):
         """Parse Get5GGuestAccessEnabled and return dict."""
         theLog = "Get 5G Guest Access Enabled"
         parseNode = f".//{c.GET_5G1_GUEST_ACCESS_ENABLED}Response"
@@ -809,7 +809,7 @@ class Netgear():
         return theInfo
 
     # Need to handle different endpoints
-    def get_5g1_guest_access_enabled_2(self, test):
+    def get_5g1_guest_access_enabled_2(self, test=False):
         """Parse Get5G1GuestAccessEnabled and return dict."""
         theLog = "Get 5G1 Guest Access Enabled 2"
         parseNode = f".//{c.GET_5G1_GUEST_ACCESS_ENABLED_2}Response"
@@ -824,7 +824,7 @@ class Netgear():
 
     # Need to handle different endpoints
     # My router does not support
-    def get_5g_guest_access_enabled_2(self, test):
+    def get_5g_guest_access_enabled_2(self, test=False):
         """Parse Get5GGuestAccessEnabled2 and return dict."""
         theLog = "Get 5G Guest Access Enabled 2"
         parseNode = f".//{c.GET_5G_GUEST_ACCESS_ENABLED_2}Response"
@@ -837,7 +837,7 @@ class Netgear():
 
         return theInfo
 
-    def set_guest_access_enabled(self, value, test):
+    def set_guest_access_enabled(self, value, test=False):
         """Set SetGuestAccessEnabled."""
         theLog = {}
         theLog[0] = "Setting Guest Access Enabled"
@@ -855,7 +855,7 @@ class Netgear():
 
         return theResponse
 
-    def set_guest_access_enabled_2(self, value, test):
+    def set_guest_access_enabled_2(self, value, test=False):
         """Set SetGuestAccessEnabled2."""
         theLog = {}
         theLog[0] = "Setting Guest Access Enabled"
@@ -873,7 +873,7 @@ class Netgear():
 
         return theResponse
 
-    def set_5g_guest_access_enabled(self, value, test):
+    def set_5g_guest_access_enabled(self, value, test=False):
         """Set Set5GGuestAccessEnabled."""
         theLog = {}
         theLog[0] = "Setting 5G Guest Access Enabled"
@@ -891,7 +891,7 @@ class Netgear():
 
         return theResponse
 
-    def set_5g_guest_access_enabled_2(self, value, test):
+    def set_5g_guest_access_enabled_2(self, value, test=False):
         """Set Set5GGuestAccessEnabled2."""
         theLog = {}
         theLog[0] = "Setting 5G Guest Access Enabled"
@@ -909,7 +909,7 @@ class Netgear():
 
         return theResponse
 
-    def set_5g1_guest_access_enabled_2(self, value, test):
+    def set_5g1_guest_access_enabled_2(self, value, test=False):
         """Set Set5G1GuestAccessEnabled2."""
         theLog = {}
         theLog[0] = "Setting 5G Guest Access Enabled"
@@ -927,7 +927,7 @@ class Netgear():
 
         return theResponse
 
-    def get_wpa_security_keys(self, test):
+    def get_wpa_security_keys(self, test=False):
         """Parse GetWPASecurityKeys and return dict."""
         theLog = "Get WPA Security Keys"
         parseNode = f".//{c.GET_WPA_SECURITY_KEYS}Response"
@@ -940,7 +940,7 @@ class Netgear():
 
         return theInfo
 
-    def get_5g_wpa_security_keys(self, test):
+    def get_5g_wpa_security_keys(self, test=False):
         """Parse Get5GWPASecurityKeys and return dict."""
         theLog = "Get 5G WPA Security Keys"
         parseNode = f".//{c.GET_5G_WPA_SECURITY_KEYS}Response"
@@ -953,7 +953,7 @@ class Netgear():
 
         return theInfo
 
-    def get_5g_info(self, test):
+    def get_5g_info(self, test=False):
         """Parse Get5GInfo and return dict."""
         theLog = "Get 5G Info"
         parseNode = f".//{c.GET_5G_INFO}Response"
@@ -978,7 +978,7 @@ class Netgear():
 
         return theInfo
 
-    def get_2g_info(self, test):
+    def get_2g_info(self, test=False):
         """Parse GetInfo and return dict."""
         theLog = "Get 2G Info"
         parseNode = f".//{c.GET_2G_INFO}Response"
@@ -1006,7 +1006,7 @@ class Netgear():
     # def set_5g_wlan_wpa_psk_by_passphrase(self):
 
     # Response is GetInfo
-    def get_available_channel(self, test):
+    def get_available_channel(self, test=False):
         """Parse GetAvailableChannel and return dict."""
         theLog = "Get Available Channel"
         parseNode = f".//{c.GET_AVAILABLE_CHANNEL}Response"
@@ -1019,7 +1019,7 @@ class Netgear():
 
         return theInfo
 
-    def get_guest_access_network_info(self, test):
+    def get_guest_access_network_info(self, test=False):
         """Parse GetGuestAccessNetworkInfo and return dict."""
         theLog = "Get Guest Access Network Info"
         parseNode = f".//{c.GET_GUEST_ACCESS_NETWORK_INFO}Response"
@@ -1040,7 +1040,7 @@ class Netgear():
 
     # def set_guest_access_network(self):
 
-    def get_5g_guest_access_network_info(self, test):
+    def get_5g_guest_access_network_info(self, test=False):
         """Parse Get5GGuestAccessNetworkInfo and return dict."""
         theLog = "Get 5G Guest Access Network Info"
         parseNode = f".//{c.GET_5G_GUEST_ACCESS_NETWORK_INFO}Response"
