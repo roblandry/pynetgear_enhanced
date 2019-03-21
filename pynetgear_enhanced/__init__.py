@@ -405,21 +405,36 @@ class Netgear():
 
         return success
 
-    # Does Not Work (Response Code 501)
     def get_parental_control_enable_status(self, test):
         """Parse GetEnableStatus and return dict."""
         theLog = "Get Parent Control Enable Status"
         parseNode = f".//{c.GET_PARENTAL_CONTROL_ENABLE_STATUS}Response"
-        toParse = []
+        toParse = ['ParentalControl']
 
         theInfo = self._get(
-            theLog, c.SERVICE_ADVANCED_QOS,
+            theLog, c.SERVICE_PARENTAL_CONTROL,
             c.GET_PARENTAL_CONTROL_ENABLE_STATUS, parseNode, toParse, test
             )
 
         return theInfo
 
-    # def enable_parental_control(self):
+    def enable_parental_control(self, value, test):
+        """Set EnableParentalControl."""
+        theLog = {}
+        theLog[0] = "Enabling Parental Control"
+        theLog[1] = "Could not successfully enable parental control"
+        value = h.value_to_zero_or_one(value)
+        theRequest = {
+            "service": c.SERVICE_PARENTAL_CONTROL,
+            "method": c.ENABLE_PARENTAL_CONTROL,
+            "params": {"NewEnable": value},
+            "body": "",
+            "need_auth": True
+        }
+
+        theResponse = self._set(theLog, theRequest, test)
+
+        return theResponse
 
     def get_all_mac_addresses(self, test):
         """Parse GetAllMACAddresses and return dict."""

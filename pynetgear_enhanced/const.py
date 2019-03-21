@@ -51,7 +51,7 @@ SET_BLOCK_DEVICE_BY_MAC = 'SetBlockDeviceByMAC'
 GET_TRAFFIC_METER_ENABLED = 'GetTrafficMeterEnabled'
 GET_TRAFFIC_METER_OPTIONS = 'GetTrafficMeterOptions'
 GET_TRAFFIC_METER_STATISTICS = 'GetTrafficMeterStatistics'
-# ENABLE_TRAFFIC_METER = 'EnableTrafficMeter'
+ENABLE_TRAFFIC_METER = 'EnableTrafficMeter'
 # SET_TRAFFIC_METER_OPTIONS = 'SetTrafficMeterOptions'
 
 # ---------------------
@@ -59,7 +59,7 @@ GET_TRAFFIC_METER_STATISTICS = 'GetTrafficMeterStatistics'
 # ---------------------
 LOGIN_OLD = 'Authenticate'
 GET_PARENTAL_CONTROL_ENABLE_STATUS = 'GetEnableStatus'
-# ENABLE_PARENTAL_CONTROL = 'EnableParentalControl'
+ENABLE_PARENTAL_CONTROL = 'EnableParentalControl'
 GET_ALL_MAC_ADDRESSES = 'GetAllMACAddresses'
 GET_DNS_MASQ_DEVICE_ID = 'GetDNSMasqDeviceID'
 # SET_DNS_MASQ_DEVICE_ID = 'SetDNSMasqDeviceID'

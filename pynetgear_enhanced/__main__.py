@@ -85,6 +85,9 @@ def main():  # noqa
     parser.add_argument(
         '--speed_test_result', help='get_speed_test_result',
         required=False, action='store_true')
+    parser.add_argument(
+        '--parental_control_status', help='get_parental_control_enable_status',
+        required=False, action='store_true')
 
     parser.add_argument(
         '--guest_access_enable',
@@ -119,6 +122,12 @@ def main():  # noqa
     parser.add_argument(
         '--enable_qos',
         help='Enable QOS: '
+        'True|true|T|t|Yes|yes|Y|y|1, '
+        'False|false|F|f|No|no|N|n|0',
+        required=False)
+    parser.add_argument(
+        '--enable_parental_control',
+        help='Enable Parental Control: '
         'True|true|T|t|Yes|yes|Y|y|1, '
         'False|false|F|f|No|no|N|n|0',
         required=False)
@@ -177,6 +186,8 @@ def main():  # noqa
         print(netgear.get_speed_test_result(args.test))
     if args.speed_test_result:
         print(netgear.get_speed_test_result(args.test))
+    if args.parental_control_status:
+        print(netgear.get_parental_control_enable_status(args.test))
 
     if args.guest_access_enable:
         print(netgear.set_guest_access_enabled(
@@ -196,13 +207,14 @@ def main():  # noqa
     if args.enable_qos:
         print(netgear.set_qos_enable_status(
             args.enable_qos, args.test))
-
+    if args.enable_parental_control:
+        print(netgear.enable_parental_control(
+            args.enable_parental_control, args.test))
 
     # does not work
     # print(netgear.get_current_app_bandwidth(args.test))
     # print(netgear.get_current_device_bandwidth(args.test))
     # print(netgear.get_current_app_bandwidth_by_mac(args.test))
-    # print(netgear.get_parental_control_enable_status(args.test))
     # print(netgear.get_available_channel(args.test))
 
 
