@@ -42,27 +42,27 @@ CONFIGURATION_STARTED = 'ConfigurationStarted'
 CONFIGURATION_FINISHED = 'ConfigurationFinished'
 
 # BLOCK/ALLOW DEVICE
-GET_BLOCK_DEVICE_ENABLE_STATUS = 'GetBlockDeviceEnableStatus'
 # SET_BLOCK_DEVICE_ENABLE = 'SetBlockDeviceEnable'
+GET_BLOCK_DEVICE_ENABLE_STATUS = 'GetBlockDeviceEnableStatus'
 # ENABLE_BLOCK_DEVICE_FOR_ALL = 'EnableBlockDeviceForAll'  # deprecated?
 SET_BLOCK_DEVICE_BY_MAC = 'SetBlockDeviceByMAC'
 
 # TRAFFIC METER
+ENABLE_TRAFFIC_METER = 'EnableTrafficMeter'
 GET_TRAFFIC_METER_ENABLED = 'GetTrafficMeterEnabled'
+# SET_TRAFFIC_METER_OPTIONS = 'SetTrafficMeterOptions'
 GET_TRAFFIC_METER_OPTIONS = 'GetTrafficMeterOptions'
 GET_TRAFFIC_METER_STATISTICS = 'GetTrafficMeterStatistics'
-ENABLE_TRAFFIC_METER = 'EnableTrafficMeter'
-# SET_TRAFFIC_METER_OPTIONS = 'SetTrafficMeterOptions'
 
 # ---------------------
 # SERVICE_PARENTAL_CONTROL
 # ---------------------
 LOGIN_OLD = 'Authenticate'
-GET_PARENTAL_CONTROL_ENABLE_STATUS = 'GetEnableStatus'
 ENABLE_PARENTAL_CONTROL = 'EnableParentalControl'
+GET_PARENTAL_CONTROL_ENABLE_STATUS = 'GetEnableStatus'
 GET_ALL_MAC_ADDRESSES = 'GetAllMACAddresses'
-GET_DNS_MASQ_DEVICE_ID = 'GetDNSMasqDeviceID'
 # SET_DNS_MASQ_DEVICE_ID = 'SetDNSMasqDeviceID'
+GET_DNS_MASQ_DEVICE_ID = 'GetDNSMasqDeviceID'
 # DELETE_MAC_ADDRESS = 'DeleteMACAddress'
 
 # ---------------------
@@ -79,10 +79,10 @@ GET_ATTACHED_DEVICES_2 = 'GetAttachDevice2'
 # ---------------------
 SET_SPEED_TEST_START = 'SetOOKLASpeedTestStart'
 GET_SPEED_TEST_RESULT = 'GetOOKLASpeedTestResult'
-GET_QOS_ENABLE_STATUS = 'GetQoSEnableStatus'
 SET_QOS_ENABLE_STATUS = 'SetQoSEnableStatus'
-GET_BANDWIDTH_CONTROL_OPTIONS = 'GetBandwidthControlOptions'
+GET_QOS_ENABLE_STATUS = 'GetQoSEnableStatus'
 # SET_BANDWIDTH_CONTROL_OPTIONS = 'SetBandwidthControlOptions'
+GET_BANDWIDTH_CONTROL_OPTIONS = 'GetBandwidthControlOptions'
 GET_CURRENT_APP_BANDWIDTH = 'GetCurrentAppBandwidth'  # Not Working
 GET_CURRENT_DEVICE_BANDWIDTH = 'GetCurrentDeviceBandwidth'  # Not Working
 GET_CURRENT_APP_BANDWIDTH_BY_MAC = 'GetCurrentAppBandwidthByMAC'  # Not Working
@@ -90,23 +90,25 @@ GET_CURRENT_APP_BANDWIDTH_BY_MAC = 'GetCurrentAppBandwidthByMAC'  # Not Working
 # ---------------------
 # SERVICE_WLAN_CONFIGURATION
 # ---------------------
+SET_GUEST_ACCESS_ENABLED = 'SetGuestAccessEnabled'  # 2.4G-1 R7800
 GET_GUEST_ACCESS_ENABLED = 'GetGuestAccessEnabled'  # 2.4G-1 R7800/R8000
+SET_GUEST_ACCESS_ENABLED_2 = 'SetGuestAccessEnabled2'  # 2.4G-1 R8000
+# GET_GUEST_ACCESS_ENABLED_2 = 'GetGuestAccessEnabled2'  # 2.4G-1 R8000
+SET_5G_GUEST_ACCESS_ENABLED = 'Set5GGuestAccessEnabled'  # 5G-1 R7800
 GET_5G1_GUEST_ACCESS_ENABLED = 'Get5GGuestAccessEnabled'  # 5G-1 R7800
 GET_5G1_GUEST_ACCESS_ENABLED_2 = 'Get5G1GuestAccessEnabled'  # 5G-1 R8000
-GET_5G_GUEST_ACCESS_ENABLED_2 = 'Get5GGuestAccessEnabled2'  # 5G-2 R8000
-SET_GUEST_ACCESS_ENABLED = 'SetGuestAccessEnabled'  # 2.4G-1 R7800
-SET_GUEST_ACCESS_ENABLED_2 = 'SetGuestAccessEnabled2'  # 2.4G-1 R8000
-SET_5G_GUEST_ACCESS_ENABLED = 'Set5GGuestAccessEnabled'  # 5G-1 R7800
-SET_5G_GUEST_ACCESS_ENABLED_2 = 'Set5GGuestAccessEnabled2'  # 5G-2 R8000
 SET_5G1_GUEST_ACCESS_ENABLED_2 = 'Set5G1GuestAccessEnabled2'  # 5G-1 R8000
+SET_5G_GUEST_ACCESS_ENABLED_2 = 'Set5GGuestAccessEnabled2'  # 5G-2 R8000
+GET_5G_GUEST_ACCESS_ENABLED_2 = 'Get5GGuestAccessEnabled2'  # 5G-2 R8000
 GET_WPA_SECURITY_KEYS = 'GetWPASecurityKeys'
 GET_5G_WPA_SECURITY_KEYS = 'Get5GWPASecurityKeys'
 GET_5G_INFO = 'Get5GInfo'
 GET_2G_INFO = 'GetInfo'
 # SET_5G_WLAN_WPA_PSK_BY_PASSPHRASE = 'Set5GWLANWPAPSKByPassphrase'
 GET_AVAILABLE_CHANNEL = 'GetAvailableChannel'
-GET_GUEST_ACCESS_NETWORK_INFO = 'GetGuestAccessNetworkInfo'
 # SET_GUEST_ACCESS_NETWORK = 'SetGuestAccessNetwork'
+GET_GUEST_ACCESS_NETWORK_INFO = 'GetGuestAccessNetworkInfo'
+# SET_5G_GUEST_ACCESS_NETWORK = 'Set5GGuestAccessNetwork'
 GET_5G_GUEST_ACCESS_NETWORK_INFO = 'Get5GGuestAccessNetworkInfo'
 
 # ---------------------
