@@ -116,6 +116,12 @@ def main():  # noqa
         'True|true|T|t|Yes|yes|Y|y|1, '
         'False|false|F|f|No|no|N|n|0',
         required=False)
+    parser.add_argument(
+        '--enable_qos',
+        help='Enable QOS: '
+        'True|true|T|t|Yes|yes|Y|y|1, '
+        'False|false|F|f|No|no|N|n|0',
+        required=False)
 
     args = parser.parse_args()
 
@@ -187,6 +193,10 @@ def main():  # noqa
     if args.guest_access_enable_5g2:
         print(netgear.set_5g1_guest_access_enabled_2(
             args.guest_access_enable_5g2, args.test))
+    if args.enable_qos:
+        print(netgear.set_qos_enable_status(
+            args.enable_qos, args.test))
+
 
     # does not work
     # print(netgear.get_current_app_bandwidth(args.test))

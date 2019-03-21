@@ -669,7 +669,23 @@ class Netgear():
 
         return theInfo
 
-    # def set_qos_enable_status(self):
+    def set_qos_enable_status(self, value, test):
+        """Set SetQoSEnableStatus."""
+        theLog = {}
+        theLog[0] = "Setting Guest Access Enabled"
+        theLog[1] = "Could not successfully set guest access"
+        value = h.value_to_zero_or_one(value)
+        theRequest = {
+            "service": c.SERVICE_ADVANCED_QOS,
+            "method": c.SET_QOS_ENABLE_STATUS,
+            "params": {"NewQoSEnable": value},
+            "body": "",
+            "need_auth": True
+        }
+
+        theResponse = self._set(theLog, theRequest, test)
+
+        return theResponse
 
     def get_bandwidth_control_options(self, test):
         """Parse GetBandwidthControlOptions and return dict."""
