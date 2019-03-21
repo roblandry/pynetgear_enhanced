@@ -792,48 +792,57 @@ class Netgear():
             parseNode, toParse, test
             )
 
+        if not theInfo:
+
+            """Parse GetGuestAccessEnabled2 and return dict."""
+            theLog = "Get Guest Access Enabled"
+            parseNode = f".//{c.GET_GUEST_ACCESS_ENABLED_2}Response"
+            toParse = ['NewGuestAccessEnabled']
+
+            theInfo = self._get(
+                theLog, c.SERVICE_WLAN_CONFIGURATION, c.GET_GUEST_ACCESS_ENABLED_2,
+                parseNode, toParse, test
+                )
+
         return theInfo
 
-    # Need to handle different endpoints
-    def get_5g1_guest_access_enabled(self, test=False):
+    def get_5g_guest_access_enabled(self, test=False):
         """Parse Get5GGuestAccessEnabled and return dict."""
         theLog = "Get 5G Guest Access Enabled"
         parseNode = f".//{c.GET_5G1_GUEST_ACCESS_ENABLED}Response"
         toParse = ['NewGuestAccessEnabled']
 
+        _LOGGER.debug(f'Trying {c.GET_5G1_GUEST_ACCESS_ENABLED}')
         theInfo = self._get(
             theLog, c.SERVICE_WLAN_CONFIGURATION,
             c.GET_5G1_GUEST_ACCESS_ENABLED, parseNode, toParse, test
             )
 
-        return theInfo
+        if not theInfo:
 
-    # Need to handle different endpoints
-    def get_5g1_guest_access_enabled_2(self, test=False):
-        """Parse Get5G1GuestAccessEnabled and return dict."""
-        theLog = "Get 5G1 Guest Access Enabled 2"
-        parseNode = f".//{c.GET_5G1_GUEST_ACCESS_ENABLED_2}Response"
-        toParse = ['NewGuestAccessEnabled']
+            """Parse Get5G1GuestAccessEnabled and return dict."""
+            theLog = "Get 5G1 Guest Access Enabled 2"
+            parseNode = f".//{c.GET_5G1_GUEST_ACCESS_ENABLED_2}Response"
+            toParse = ['NewGuestAccessEnabled']
 
-        theInfo = self._get(
-            theLog, c.SERVICE_WLAN_CONFIGURATION,
-            c.GET_5G1_GUEST_ACCESS_ENABLED_2, parseNode, toParse, test
-            )
+            _LOGGER.debug(f'Trying {c.GET_5G1_GUEST_ACCESS_ENABLED_2}')
+            theInfo = self._get(
+                theLog, c.SERVICE_WLAN_CONFIGURATION,
+                c.GET_5G1_GUEST_ACCESS_ENABLED_2, parseNode, toParse, test
+                )
 
-        return theInfo
+        if not theInfo:
 
-    # Need to handle different endpoints
-    # My router does not support
-    def get_5g_guest_access_enabled_2(self, test=False):
-        """Parse Get5GGuestAccessEnabled2 and return dict."""
-        theLog = "Get 5G Guest Access Enabled 2"
-        parseNode = f".//{c.GET_5G_GUEST_ACCESS_ENABLED_2}Response"
-        toParse = ['NewGuestAccessEnabled']
+            """Parse Get5GGuestAccessEnabled2 and return dict."""
+            theLog = "Get 5G Guest Access Enabled 2"
+            parseNode = f".//{c.GET_5G_GUEST_ACCESS_ENABLED_2}Response"
+            toParse = ['NewGuestAccessEnabled']
 
-        theInfo = self._get(
-            theLog, c.SERVICE_WLAN_CONFIGURATION,
-            c.GET_5G_GUEST_ACCESS_ENABLED_2, parseNode, toParse, test
-            )
+            _LOGGER.debug(f'Trying {c.GET_5G_GUEST_ACCESS_ENABLED_2}')
+            theInfo = self._get(
+                theLog, c.SERVICE_WLAN_CONFIGURATION,
+                c.GET_5G_GUEST_ACCESS_ENABLED_2, parseNode, toParse, test
+                )
 
         return theInfo
 

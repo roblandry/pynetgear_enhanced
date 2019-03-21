@@ -41,16 +41,18 @@ def to_get(parseNode, toParse, response):
     """Create a dict of the node information."""
     success, theNode = find_node(response.text, parseNode)
 
+    if not success:
+        return False
+
     theInfo = {}
 
-    if success:
-
-        for x in toParse:
-            theItem = xml_get(theNode, x)
-            if theItem:
-                theInfo[x] = theItem
+    for x in toParse:
+        theItem = xml_get(theNode, x)
+        if theItem:
+            theInfo[x] = theItem
 
     return theInfo
+
 
 
 def autodetect_url():

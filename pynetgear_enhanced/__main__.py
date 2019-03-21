@@ -124,18 +124,18 @@ def main():  # noqa
         'True|true|T|t|Yes|yes|Y|y|1, '
         'False|false|F|f|No|no|N|n|0',
         required=False)
-    parser.add_argument(
-        '--guest_access_5g1', help='get_5g1_guest_access_enabled_2',
-        required=False, action='store_true')
+    # parser.add_argument(
+    #    '--guest_access_5g1', help='get_5g1_guest_access_enabled_2',
+    #    required=False, action='store_true')
     parser.add_argument(
         '--guest_access_enable_5g2',
         help='Enable Guest 5G Wifi: '
         'True|true|T|t|Yes|yes|Y|y|1, '
         'False|false|F|f|No|no|N|n|0',
         required=False)
-    parser.add_argument(
-        '--guest_access_5g2', help='get_5g_guest_access_enabled_2',
-        required=False, action='store_true')
+    # parser.add_argument(
+    #    '--guest_access_5g2', help='get_5g_guest_access_enabled_2',
+    #    required=False, action='store_true')
     parser.add_argument(
         '--wpa_key', help='get_wpa_security_keys',
         required=False, action='store_true')
@@ -229,17 +229,17 @@ def main():  # noqa
         print(netgear.set_5g_guest_access_enabled(
             args.guest_access_enable_5g, args.test))
     if args.guest_access_5g:
-        print(netgear.get_5g1_guest_access_enabled(args.test))
+        print(netgear.get_5g_guest_access_enabled(args.test))
     if args.guest_access_enable_5g1:
         print(netgear.set_5g_guest_access_enabled_2(
             args.guest_access_enable_5g1, args.test))
-    if args.guest_access_5g1:
-        print(netgear.get_5g1_guest_access_enabled_2(args.test))
+    # if args.guest_access_5g1:
+    #    print(netgear.get_5g1_guest_access_enabled_2(args.test))
     if args.guest_access_enable_5g2:
         print(netgear.set_5g1_guest_access_enabled_2(
             args.guest_access_enable_5g2, args.test))
-    if args.guest_access_5g2:
-        print(netgear.get_5g_guest_access_enabled_2(args.test))
+    # if args.guest_access_5g2:
+    #    print(netgear.get_5g_guest_access_enabled_2(args.test))
     if args.wpa_key:
         print(netgear.get_wpa_security_keys(args.test))
     if args.wpa_key_5g:
