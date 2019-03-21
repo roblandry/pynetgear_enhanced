@@ -41,9 +41,9 @@ def to_get(parseNode, toParse, response):
     """Create a dict of the node information."""
     success, theNode = find_node(response.text, parseNode)
 
-    if success:
+    theInfo = {}
 
-        theInfo = {}
+    if success:
 
         for x in toParse:
             theItem = xml_get(theNode, x)
