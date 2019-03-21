@@ -7,6 +7,8 @@ import re
 import sys
 import requests
 import logging
+from datetime import timedelta
+
 from .const import SERVICE_PREFIX
 
 _LOGGER = logging.getLogger(__name__)
@@ -136,3 +138,45 @@ def convert(value, to_type, default=None):
     except ValueError:
         # If value could not be converted
         return default
+
+
+def parse_text(text):
+    """
+    There are three kinds of values in the returned data.
+
+    This function parses the different values and returns
+    (total, avg), timedelta or a plain float
+    """
+    def tofloats(lst):
+        return (float(t) for t in lst)
+    try:
+        if "/" in text:  # "6.19/0.88" total/avg
+            return tuple(tofloats(text.split('/')))
+
+        if ":" in text:  # 11:14 hr:mn
+            hour, mins = tofloats(text.split(':'))
+            return timedelta(hours=hour, minutes=mins)
+
+        return float(text)
+    except ValueError:
+        return None
+
+
+def str_to_bool(s):
+    """Convert string t/f to bool."""
+    if s == 'True':
+        return True
+    if s == 'False':
+        return False
+
+    raise ValueError("Cannot covert {} to a bool".format(s))
+
+
+def value_to_zero_or_one(s):
+    """Convert value to 1 or 0 string."""
+    if s.lower() in ('true', 't', 'yes', 'y', '1'):
+        return '1'
+    if s.lower() in ('false', 'f', 'no', 'n', '0'):
+        return '0'
+
+    raise ValueError("Cannot covert {} to a 1 or 0".format(s))
