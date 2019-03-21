@@ -131,6 +131,12 @@ def main():  # noqa
         'True|true|T|t|Yes|yes|Y|y|1, '
         'False|false|F|f|No|no|N|n|0',
         required=False)
+    parser.add_argument(
+        '--enable_traffic_meter',
+        help='Enable Traffic Meter: '
+        'True|true|T|t|Yes|yes|Y|y|1, '
+        'False|false|F|f|No|no|N|n|0',
+        required=False)
 
     args = parser.parse_args()
 
@@ -210,6 +216,10 @@ def main():  # noqa
     if args.enable_parental_control:
         print(netgear.enable_parental_control(
             args.enable_parental_control, args.test))
+    if args.enable_traffic_meter:
+        print(netgear.enable_traffic_meter(
+            args.enable_traffic_meter, args.test))
+
 
     # does not work
     # print(netgear.get_current_app_bandwidth(args.test))

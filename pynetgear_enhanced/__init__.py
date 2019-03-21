@@ -383,7 +383,24 @@ class Netgear():
 
         return {t: h.parse_text(value) for t, value in theInfo.items()}
 
-    # def enable_traffic_meter(self):
+    def enable_traffic_meter(self, value, test):
+        """Set EnableTrafficMeter."""
+        theLog = {}
+        theLog[0] = "Enabling Traffic Meter"
+        theLog[1] = "Could not successfully enable traffic meter"
+        value = h.value_to_zero_or_one(value)
+        theRequest = {
+            "service": c.SERVICE_DEVICE_CONFIG,
+            "method": c.ENABLE_TRAFFIC_METER,
+            "params": {"NewTrafficMeterEnable": value},
+            "body": "",
+            "need_auth": True
+        }
+
+        theResponse = self._set(theLog, theRequest, test)
+
+        return theResponse
+
     # def set_traffic_meter_options(self):
 
     ##########################################################################
