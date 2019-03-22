@@ -322,7 +322,7 @@ class Netgear():
 
     def get_traffic_meter_enabled(self, test=False):
         """Parse GetTrafficMeterEnabled and return dict."""
-        theLog = "Get DNS Masq Device ID"
+        theLog = "Get Traffic Meter Enabled"
         parseNode = f".//{c.GET_TRAFFIC_METER_ENABLED}Response"
         toParse = [
             'NewTrafficMeterEnable'
@@ -800,8 +800,8 @@ class Netgear():
             toParse = ['NewGuestAccessEnabled']
 
             theInfo = self._get(
-                theLog, c.SERVICE_WLAN_CONFIGURATION, c.GET_GUEST_ACCESS_ENABLED_2,
-                parseNode, toParse, test
+                theLog, c.SERVICE_WLAN_CONFIGURATION,
+                c.GET_GUEST_ACCESS_ENABLED_2, parseNode, toParse, test
                 )
 
         return theInfo
@@ -812,7 +812,7 @@ class Netgear():
         parseNode = f".//{c.GET_5G1_GUEST_ACCESS_ENABLED}Response"
         toParse = ['NewGuestAccessEnabled']
 
-        _LOGGER.debug(f'Trying {c.GET_5G1_GUEST_ACCESS_ENABLED}')
+        _LOGGER.debug("Trying %s", c.GET_5G1_GUEST_ACCESS_ENABLED)
         theInfo = self._get(
             theLog, c.SERVICE_WLAN_CONFIGURATION,
             c.GET_5G1_GUEST_ACCESS_ENABLED, parseNode, toParse, test
@@ -825,7 +825,7 @@ class Netgear():
             parseNode = f".//{c.GET_5G1_GUEST_ACCESS_ENABLED_2}Response"
             toParse = ['NewGuestAccessEnabled']
 
-            _LOGGER.debug(f'Trying {c.GET_5G1_GUEST_ACCESS_ENABLED_2}')
+            _LOGGER.debug("Trying %s", c.GET_5G1_GUEST_ACCESS_ENABLED_2)
             theInfo = self._get(
                 theLog, c.SERVICE_WLAN_CONFIGURATION,
                 c.GET_5G1_GUEST_ACCESS_ENABLED_2, parseNode, toParse, test
@@ -838,7 +838,7 @@ class Netgear():
             parseNode = f".//{c.GET_5G_GUEST_ACCESS_ENABLED_2}Response"
             toParse = ['NewGuestAccessEnabled']
 
-            _LOGGER.debug(f'Trying {c.GET_5G_GUEST_ACCESS_ENABLED_2}')
+            _LOGGER.debug("Trying %s", c.GET_5G_GUEST_ACCESS_ENABLED_2)
             theInfo = self._get(
                 theLog, c.SERVICE_WLAN_CONFIGURATION,
                 c.GET_5G_GUEST_ACCESS_ENABLED_2, parseNode, toParse, test

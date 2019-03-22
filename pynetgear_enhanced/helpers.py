@@ -54,7 +54,6 @@ def to_get(parseNode, toParse, response):
     return theInfo
 
 
-
 def autodetect_url():
     """
     Try to autodetect the base URL of the router SOAP service.
