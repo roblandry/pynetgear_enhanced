@@ -277,8 +277,37 @@ class Netgear():
         self.config_started = not success
         return success
 
-    # def get_block_device_enable_status(self):
-    # def set_block_device_enable(self):
+    def get_block_device_enable_status(self, test=False):
+        """Parse GetBlockDeviceEnableStatus and return dict."""
+        theLog = "Get Block Device Enable Status"
+        parseNode = f".//{c.GET_BLOCK_DEVICE_ENABLE_STATUS}Response"
+        toParse = ['NewBlockDeviceEnable']
+
+        theInfo = self._get(
+            theLog, c.SERVICE_DEVICE_CONFIG,
+            c.GET_BLOCK_DEVICE_ENABLE_STATUS, parseNode, toParse, test
+            )
+
+        return theInfo
+
+    def set_block_device_enable(self, value, test=False):
+        """Set SetBlockDeviceEnable."""
+        theLog = {}
+        theLog[0] = "Setting Block Device Enabled"
+        theLog[1] = "Could not successfully set block device"
+        value = h.value_to_zero_or_one(value)
+        theRequest = {
+            "service": c.SERVICE_DEVICE_CONFIG,
+            "method": c.SET_BLOCK_DEVICE_ENABLE,
+            "params": {"NewBlockDeviceEnable": value},
+            "body": "",
+            "need_auth": True
+        }
+
+        theResponse = self._set(theLog, theRequest, test)
+
+        return theResponse
+
     # def enable_block_device_for_all(self):
 
     def set_block_device_by_mac(self, mac_addr,

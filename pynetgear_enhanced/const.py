@@ -42,7 +42,7 @@ CONFIGURATION_STARTED = 'ConfigurationStarted'
 CONFIGURATION_FINISHED = 'ConfigurationFinished'
 
 # BLOCK/ALLOW DEVICE
-# SET_BLOCK_DEVICE_ENABLE = 'SetBlockDeviceEnable'
+SET_BLOCK_DEVICE_ENABLE = 'SetBlockDeviceEnable'
 GET_BLOCK_DEVICE_ENABLE_STATUS = 'GetBlockDeviceEnableStatus'
 # ENABLE_BLOCK_DEVICE_FOR_ALL = 'EnableBlockDeviceForAll'  # deprecated?
 SET_BLOCK_DEVICE_BY_MAC = 'SetBlockDeviceByMAC'

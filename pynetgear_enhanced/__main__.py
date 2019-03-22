@@ -20,6 +20,15 @@ def main():  # noqa
         '--check_fw', help='check_new_firmware',
         required=False, action='store_true')
     parser.add_argument(
+        '--enable_block_device',
+        help='Enable Block Device: '
+        'True|true|T|t|Yes|yes|Y|y|1, '
+        'False|false|F|f|No|no|N|n|0',
+        required=False)
+    parser.add_argument(
+        '--block_device_status', help='Get Block Device Status',
+        required=False, action='store_true')
+    parser.add_argument(
         '--enable_traffic_meter',
         help='Enable Traffic Meter: '
         'True|true|T|t|Yes|yes|Y|y|1, '
@@ -164,6 +173,11 @@ def main():  # noqa
     # ---------------------
     if args.check_fw:
         print(netgear.check_new_firmware(args.test))
+    if args.enable_block_device:
+        print(netgear.set_block_device_enable(
+            args.enable_block_device, args.test))
+    if args.block_device_status:
+        print(netgear.get_block_device_enable_status(args.test))
     if args.traffic_meter:
         print(netgear.get_traffic_meter_statistics(args.test))
     if args.enable_traffic_meter:
