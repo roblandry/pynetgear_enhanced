@@ -12,9 +12,9 @@ The ssl defaults to false.
 You can specify url and it will take precedence on host/port/ssl parameters.
 This allows the use of HTTPS, `https://orbilogin.com` for example.
 
-Thanks to:
-[MatMaul](https://github.com/MatMaul/pynetgear) for the original code.
-[gruijter](https://github.com/gruijter/netgear.js) for additional SOAP endpoints.
+Thanks to:  
+[MatMaul](https://github.com/MatMaul/pynetgear) for the original code.  
+[gruijter](https://github.com/gruijter/netgear.js) for additional SOAP endpoints.  
 
 
 ## It currently supports the following operations: ##
