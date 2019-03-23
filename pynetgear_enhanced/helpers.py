@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # encoding: utf-8
 """Helper functions for pynetgear."""
 from io import StringIO
@@ -9,7 +8,7 @@ import requests
 import logging
 from datetime import timedelta
 
-from .const import SERVICE_PREFIX
+from .const import SERVICE_PREFIX  # noqa
 
 _LOGGER = logging.getLogger(__name__)
 

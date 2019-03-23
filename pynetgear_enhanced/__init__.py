@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # encoding: utf-8
 """Module to communicate with Netgear routers using the SOAP v2 API."""
 from __future__ import print_function
@@ -18,7 +17,7 @@ Device = namedtuple(
                "ssid", "conn_ap_mac"])
 
 
-class Netgear():
+class NetgearEnhanced():
     """Represents a session to a Netgear Router."""
 
     def __init__(self, password=None, host=None, user=None, port=None,  # noqa
@@ -518,7 +517,7 @@ class Netgear():
     ##########################################################################
     # SERVICE_DEVICE_INFO
     ##########################################################################
-    def getInfo(self, test=False):
+    def get_info(self, test=False):
         """Parse GetInfo and return dict."""
         theLog = "Get Info"
         parseNode = f".//{c.GET_INFO}Response"
@@ -536,7 +535,7 @@ class Netgear():
 
         return theInfo
 
-    def getSupportFeatureListXML(self, test=False):
+    def get_support_feature_list_XML(self, test=False):
         """Parse getSupportFeatureListXML and return dict."""
         theLog = "Get Support Feature List"
         parseNode = (
@@ -715,7 +714,7 @@ class Netgear():
 
         return theInfo
 
-    def getQoSEnableStatus(self, test=False):
+    def get_qos_enable_status(self, test=False):
         """Parse getQoSEnableStatus and return dict."""
         theLog = "Get QOS Enable Status"
         parseNode = f".//{c.GET_QOS_ENABLE_STATUS}Response"
@@ -823,7 +822,7 @@ class Netgear():
 
         if not theInfo:
 
-            """Parse GetGuestAccessEnabled2 and return dict."""
+            # Parse GetGuestAccessEnabled2 and return dict.
             theLog = "Get Guest Access Enabled"
             parseNode = f".//{c.GET_GUEST_ACCESS_ENABLED_2}Response"
             toParse = ['NewGuestAccessEnabled']
@@ -849,7 +848,7 @@ class Netgear():
 
         if not theInfo:
 
-            """Parse Get5G1GuestAccessEnabled and return dict."""
+            # Parse Get5G1GuestAccessEnabled and return dict.
             theLog = "Get 5G1 Guest Access Enabled 2"
             parseNode = f".//{c.GET_5G1_GUEST_ACCESS_ENABLED_2}Response"
             toParse = ['NewGuestAccessEnabled']
@@ -862,7 +861,7 @@ class Netgear():
 
         if not theInfo:
 
-            """Parse Get5GGuestAccessEnabled2 and return dict."""
+            # Parse Get5GGuestAccessEnabled2 and return dict.
             theLog = "Get 5G Guest Access Enabled 2"
             parseNode = f".//{c.GET_5G_GUEST_ACCESS_ENABLED_2}Response"
             toParse = ['NewGuestAccessEnabled']

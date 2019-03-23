@@ -61,10 +61,10 @@ Return a dict containing the DNS Masq device IDs.
 
 #### SERVICE_DEVICE_INFO: ####
 
-* **getInfo**  
+* **get_info**  
 Return a dict containing the Router Information.
 
-* **getSupportFeatureListXML**  
+* **get_support_feature_list_XML**  
 Return a dict containing the Supported Features.
 
 * **get_attached_devices**  
@@ -86,7 +86,7 @@ You will have to wait several seconds following starting the speed test to get t
 * **set_qos_enable_status**  
 Enable/Disable QOS.
 
-* **getQoSEnableStatus**  
+* **get_qos_enable_status**  
 Return a dict containing the Status of QOS.
 
 * **get_bandwidth_control_options**  

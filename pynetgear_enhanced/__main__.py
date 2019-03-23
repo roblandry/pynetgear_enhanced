@@ -1,5 +1,6 @@
+# encoding: utf-8
 """Run PyNetgear from the command-line."""
-from . import Netgear
+from . import NetgearEnhanced  # noqa
 import argparse
 import time
 
@@ -17,157 +18,130 @@ def main():  # noqa
     # SERVICE_DEVICE_CONFIG
     # ---------------------
     parser.add_argument(
-        '--check_fw', help='check_new_firmware',
+        '--check_fw', help='Check for new firmware',
         required=False, action='store_true')
     parser.add_argument(
-        '--enable_block_device',
-        help='Enable Block Device: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--enable_block_device', help='Enable Access Control: '
+        'true|false', required=False)
     parser.add_argument(
-        '--block_device_status', help='Get Block Device Status',
+        '--block_device_status', help='Get Access Control Status',
         required=False, action='store_true')
     parser.add_argument(
-        '--enable_traffic_meter',
-        help='Enable Traffic Meter: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--enable_traffic_meter', help='Enable Traffic Meter: '
+        'true|false', required=False)
     parser.add_argument(
-        '--traffic_meter', help='get_traffic_meter_statistics',
+        '--traffic_meter', help='Get Traffic Meter Statistics',
         required=False, action='store_true')
     parser.add_argument(
-        '--traffic_meter_enabled', help='get_traffic_meter_enabled',
+        '--traffic_meter_enabled', help='Get Traffic Meter Status',
         required=False, action='store_true')
     parser.add_argument(
-        '--traffic_meter_options', help='get_traffic_meter_options',
+        '--traffic_meter_options', help='Get Traffic Meter Options',
         required=False, action='store_true')
     # ---------------------
     # SERVICE_PARENTAL_CONTROL
     # ---------------------
     parser.add_argument(
-        '--enable_parental_control',
-        help='Enable Parental Control: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--enable_parental_control', help='Enable Parental Control: '
+        'true|false', required=False)
     parser.add_argument(
-        '--parental_control_status', help='get_parental_control_enable_status',
+        '--parental_control_status', help='Get Parental Control Status',
         required=False, action='store_true')
     parser.add_argument(
-        '--mac_address', help='get_all_mac_addresses',
+        '--mac_address', help='Get all MAC Addresses',
         required=False, action='store_true')
     parser.add_argument(
-        '--dns_masq', help='get_dns_masq_device_id',
+        '--dns_masq', help='Get DNS Masq Device ID',
         required=False, action='store_true')
     # ---------------------
     # SERVICE_DEVICE_INFO
     # ---------------------
     parser.add_argument(
-        '--info', help='getInfo',
+        '--info', help='Get Info',
         required=False, action='store_true')
     parser.add_argument(
-        '--support_feature', help='getSupportFeatureListXML',
+        '--support_feature', help='Get Supported Features',
         required=False, action='store_true')
     parser.add_argument(
-        '--attached_devices', help='get_attached_devices',
+        '--attached_devices', help='Get Attached Devices',
         required=False, action='store_true')
     parser.add_argument(
-        '--attached_devices2', help='get_attached_devices_2',
+        '--attached_devices2', help='Get Attached Devices 2',
         required=False, action='store_true')
     # ---------------------
     # SERVICE_ADVANCED_QOS
     # ---------------------
     parser.add_argument(
-        '--speed_test_start', help='set_speed_test_start',
+        '--speed_test_start', help='Start Speed Test',
         required=False, action='store_true')
     parser.add_argument(
-        '--speed_test_result', help='get_speed_test_result',
+        '--speed_test_result', help='Get Speed Test Results',
         required=False, action='store_true')
     parser.add_argument(
-        '--enable_qos',
-        help='Enable QOS: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--enable_qos', help='Enable QOS: '
+        'true|false', required=False)
     parser.add_argument(
-        '--qos_enabled', help='getQoSEnableStatus',
+        '--qos_enabled', help='Get QOS Status',
         required=False, action='store_true')
     parser.add_argument(
-        '--bw_control', help='get_bandwidth_control_options',
+        '--bw_control', help='Get Bandwidth Control Options',
         required=False, action='store_true')
     # ---------------------
     # SERVICE_WLAN_CONFIGURATION
     # ---------------------
     parser.add_argument(
-        '--guest_access_enable',
-        help='Enable Guest 2.4G Wifi: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--guest_access_enable', help='Enable Guest 2.4G Wifi: '
+        'true|false', required=False)
     parser.add_argument(
-        '--guest_access', help='get_guest_access_enabled',
+        '--guest_access', help='Get 2G Guest Wifi Status',
         required=False, action='store_true')
     parser.add_argument(
-        '--guest_access_enable2',
-        help='Enable Guest 2.4G Wifi: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--guest_access_enable2', help='Enable Guest 2.4G Wifi: '
+        'true|false', required=False)
     # parser.add_argument(
     #    '--guest_access2', help='get_guest_access_enabled2',
     #    required=False, action='store_true')
     parser.add_argument(
-        '--guest_access_enable_5g',
-        help='Enable Guest 5G Wifi: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--guest_access_enable_5g', help='Enable Guest 5G Wifi: '
+        'true|false', required=False)
     parser.add_argument(
-        '--guest_access_5g', help='get_5g1_guest_access_enabled',
+        '--guest_access_5g', help='Get 5G Guest Wifi Status',
         required=False, action='store_true')
     parser.add_argument(
-        '--guest_access_enable_5g1',
-        help='Enable Guest 5G Wifi: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--guest_access_enable_5g1', help='Enable Guest 5G Wifi2: '
+        'true|false', required=False)
     # parser.add_argument(
     #    '--guest_access_5g1', help='get_5g1_guest_access_enabled_2',
     #    required=False, action='store_true')
     parser.add_argument(
-        '--guest_access_enable_5g2',
-        help='Enable Guest 5G Wifi: '
-        'True|true|T|t|Yes|yes|Y|y|1, '
-        'False|false|F|f|No|no|N|n|0',
-        required=False)
+        '--guest_access_enable_5g2', help='Enable Guest 5G Wifi3: '
+        'true|false', required=False)
     # parser.add_argument(
     #    '--guest_access_5g2', help='get_5g_guest_access_enabled_2',
     #    required=False, action='store_true')
     parser.add_argument(
-        '--wpa_key', help='get_wpa_security_keys',
+        '--wpa_key', help='Get 2G WPA Key',
         required=False, action='store_true')
     parser.add_argument(
-        '--wpa_key_5g', help='get_5g_wpa_security_keys',
+        '--wpa_key_5g', help='Get 5G WPA Key',
         required=False, action='store_true')
     parser.add_argument(
-        '--get_2g_info', help='get_2g_info',
+        '--get_2g_info', help='Get 2G Info',
         required=False, action='store_true')
     parser.add_argument(
-        '--get_5g_info', help='get_5g_info',
+        '--get_5g_info', help='Get 5G Info',
         required=False, action='store_true')
     parser.add_argument(
-        '--guest_access_net', help='get_guest_access_network_info',
+        '--guest_access_net', help='Get 2G Guest Wifi Info',
         required=False, action='store_true')
     parser.add_argument(
-        '--guest_access_net_5g', help='get_5g_guest_access_network_info',
+        '--guest_access_net_5g', help='Get 5G Guest Wifi Info',
         required=False, action='store_true')
 
     args = parser.parse_args()
 
     if args.password:
-        netgear = Netgear(args.password)
+        netgear = NetgearEnhanced(args.password)
     # ---------------------
     # SERVICE_DEVICE_CONFIG
     # ---------------------
@@ -203,9 +177,9 @@ def main():  # noqa
     # SERVICE_DEVICE_INFO
     # ---------------------
     if args.info:
-        print(netgear.getInfo(args.test))
+        print(netgear.get_info(args.test))
     if args.support_feature:
-        print(netgear.getSupportFeatureListXML(args.test))
+        print(netgear.get_support_feature_list_XML(args.test))
     if args.attached_devices:
         print(netgear.get_attached_devices(args.test))
     if args.attached_devices2:
@@ -223,7 +197,7 @@ def main():  # noqa
         print(netgear.set_qos_enable_status(
             args.enable_qos, args.test))
     if args.qos_enabled:
-        print(netgear.getQoSEnableStatus(args.test))
+        print(netgear.get_qos_enable_status(args.test))
     if args.bw_control:
         print(netgear.get_bandwidth_control_options(args.test))
     # ---------------------
