@@ -18,6 +18,9 @@ def main():  # noqa
     # SERVICE_DEVICE_CONFIG
     # ---------------------
     parser.add_argument(
+        '--reboot', help='Reboot Router: '
+        'true|false', required=False)
+    parser.add_argument(
         '--check_fw', help='Check for new firmware',
         required=False, action='store_true')
     parser.add_argument(
@@ -145,6 +148,9 @@ def main():  # noqa
     # ---------------------
     # SERVICE_DEVICE_CONFIG
     # ---------------------
+    if args.reboot:
+        print(netgear.reboot(
+            args.reboot, args.test))
     if args.check_fw:
         print(netgear.check_new_firmware(args.test))
     if args.enable_block_device:

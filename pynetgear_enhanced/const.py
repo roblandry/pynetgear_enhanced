@@ -34,7 +34,7 @@ SERVICE_WLAN_CONFIGURATION = "WLANConfiguration:1"
 # ---------------------
 LOGIN = 'SOAPLogin'
 # LOGOUT = 'SOAPLogout'
-# REBOOT = 'Reboot'
+REBOOT = 'Reboot'
 CHECK_NEW_FIRMWARE = 'CheckNewFirmware'
 # UPDATE_NEW_FIRMWARE = 'UpdateNewFirmware'
 CONFIGURATION_STARTED = 'ConfigurationStarted'

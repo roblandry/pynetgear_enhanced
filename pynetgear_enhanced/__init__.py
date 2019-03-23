@@ -99,6 +99,10 @@ class NetgearEnhanced():
         try:
             response = requests.post(self.soap_url, headers=headers,
                                      data=message, timeout=30, verify=False)
+            # assume we are good and abruptly exit to prevent errors
+            if method == c.REBOOT:
+                # print(response.text)
+                exit(0)
 
             if need_auth and h.is_unauthorized_response(response):
                 # let's discard the cookie because it probably expired (v2)
@@ -221,7 +225,24 @@ class NetgearEnhanced():
         return self.cookie
 
     # def logout(self):
-    # def reboot(self):
+
+    def reboot(self, value, test=False):
+        """Reboot Router."""
+        theLog = {}
+        theLog[0] = "Rebooting Router"
+        theLog[1] = "Could not successfully reboot router"
+        value = h.value_to_zero_or_one(value)
+        theRequest = {
+            "service": c.SERVICE_DEVICE_CONFIG,
+            "method": c.REBOOT,
+            "params": {"NewRebootEnable": value},
+            "body": "",
+            "need_auth": True
+        }
+
+        theResponse = self._set(theLog, theRequest, test)
+
+        return theResponse
 
     def check_new_firmware(self, test=False):
         """Parse CheckNewFirmware and return dict."""
