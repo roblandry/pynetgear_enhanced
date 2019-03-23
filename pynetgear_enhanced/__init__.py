@@ -102,7 +102,8 @@ class NetgearEnhanced():
             # assume we are good and abruptly exit to prevent errors
             if method == c.REBOOT:
                 # print(response.text)
-                exit(0)
+                # exit(0)
+                return True, response
 
             if need_auth and h.is_unauthorized_response(response):
                 # let's discard the cookie because it probably expired (v2)
@@ -185,6 +186,10 @@ class NetgearEnhanced():
 
         if test:
             print(response.text)
+
+        if method == c.REBOOT:
+            # exit(0)
+            return True
 
         if not success:
             _LOGGER.error(logFail)
