@@ -8,6 +8,7 @@ setup(name='pynetgear_enhanced',
       author='Rob Landry',
       author_email='rob@landry.me',
       license='MIT',
+      description = 'Library to interact with Netgear Routers using SOAP',
       install_requires=['requests>=2.0'],
       packages=['pynetgear_enhanced'],
       zip_safe=True)
