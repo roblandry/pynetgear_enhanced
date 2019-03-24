@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pynetgear_enhanced',
-      version='0.1.0',
+      version='0.1.1',
       description='Access Netgear routers using their SOAP API',
       url='http://github.com/roblandry/pynetgear_enhanced',
       download_url='http://github.com/roblandry/pynetgear_enhanced/archive/v0.1.1.tar.gz',
