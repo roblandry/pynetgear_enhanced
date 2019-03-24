@@ -28,6 +28,9 @@ Allows user to block/unblock devices from accessing router by specifying mac_add
 
 #### SERVICE_DEVICE_CONFIG: ####
 
+* **reboot**  
+Reboot device.
+
 * **check_new_firmware**  
 Return a dict containing the Firmware info.
 
