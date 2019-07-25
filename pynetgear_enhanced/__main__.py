@@ -1,257 +1,180 @@
 # encoding: utf-8
 """Run PyNetgear from the command-line."""
-from . import NetgearEnhanced  # noqa
-import argparse
-import time
+import sys
+import os
+
+from argparse import ArgumentParser
+from . import NetgearEnhanced  # pylint: disable=relative-beyond-top-level
+from .const import ALLOW, BLOCK  # pylint: disable=relative-beyond-top-level
+from .commands import COMMANDS  # pylint: disable=relative-beyond-top-level
 
 
-def main():  # noqa
+def make_formatter(format_name):  # noqa  # pylama C901
+    """Return a callable that outputs the data. Defaults to print."""
+    if "json" in format_name:
+        from json import dumps
+        import datetime
+
+        def jsonhandler(obj):
+            if isinstance(obj, (datetime.datetime, datetime.date)):
+                return obj.isoformat()
+
+            return obj
+
+        if format_name == "prettyjson":
+            def jsondumps(data):
+                return dumps(
+                    data, default=jsonhandler, indent=2, separators=(',', ': ')
+                )
+        else:
+            def jsondumps(data):
+                return dumps(data, default=jsonhandler)
+
+        def jsonify(data):
+            if isinstance(data, dict):
+                print(jsondumps(data))
+            elif isinstance(data, list):
+                print(jsondumps([device._asdict() for device in data]))
+            else:
+                print(dumps({'result': data}))
+        return jsonify
+    else:
+        def printer(data):
+            if isinstance(data, dict):
+                print(data)
+            else:
+                for row in data:
+                    print(row)
+        return printer
+
+
+def argparser():
+    """Construct the ArgumentParser for the CLI."""
+    parser = ArgumentParser(prog='pynetgear_enhanced')
+
+    parser.add_argument(
+        "--format", choices=['json', 'prettyjson', 'py'], default='prettyjson'
+        )
+
+    # Connection Config
+    router_args = parser.add_argument_group("router connection config")
+    router_args.add_argument("--host", help="Hostname for the router")
+    router_args.add_argument("--user", help="Account for login")
+    router_args.add_argument("--port", help="Port exposed on the router")
+    router_args.add_argument(
+        "--login-v2", help="Force the use of the cookie-based authentication",
+        dest="force_login_v2", default=False, action="store_true"
+        )
+    router_args.add_argument(
+            "-p", "--password",
+            help="Not required with a wired connection." +
+                 "Optionally, set the PYNETGEAR_PASSWORD environment variable")
+    router_args.add_argument(
+            "--url", help="Overrides host:port and ssl with url to router")
+    router_args.add_argument("--no-ssl",
+                             dest="ssl", default=True,
+                             action="store_false",
+                             help="Connect with https")
+
+    subparsers = parser.add_subparsers(
+            description="Runs subcommand against the specified router",
+            dest="subcommand", metavar="")
+
+    # loop through COMMANDS and create the cli args
+    for command, value in COMMANDS.items():
+
+        if len(value) == 3:
+            strAddParser = subparsers.add_parser(command, help=value[1])
+
+            for _, aArgs in value[2].items():
+
+                if aArgs[2]:
+                    strAddParser.add_argument(
+                        aArgs[0], aArgs[1],
+                        help=aArgs[4], choices=aArgs[2])
+
+                elif aArgs[3] == 'store_true':
+                    strAddParser.add_argument(
+                        aArgs[0], aArgs[1], help=aArgs[4],
+                        action='store_true', default=False)
+
+                else:
+                    strAddParser.add_argument(
+                        aArgs[0], aArgs[1], help=aArgs[4])
+
+        else:
+            subparsers.add_parser(command, help=value[1])
+
+    return parser
+
+
+def run_subcommand(netgear_enhanced, args):  # noqa  # pylama C901
+    """Run the subcommand configured in args on the netgear_enhanced session."""
+    subcommand = args.subcommand
+    response = None
+
+    if subcommand in COMMANDS:
+        theFunction = COMMANDS[subcommand][0]
+        test = False
+        verbose = False
+        enable = False
+        mac = False
+        action = None
+        if hasattr(args, 'test'):
+            test = args.test
+        if hasattr(args, 'verbose'):
+            verbose = args.verbose
+        if hasattr(args, 'enable'):
+            enable = args.enable
+        if hasattr(args, 'mac'):
+            mac = args.mac
+        if hasattr(args, 'action'):
+            action = args.action
+
+        # MOST functions have a test argument
+        # Handle verbose cl arg
+        if verbose:
+            response = getattr(netgear_enhanced, 'get_attached_devices_2')(test)
+        # Special case for block device
+        elif subcommand == 'block_device_cli':
+            theAction = BLOCK
+            if action == 'allow':
+                theAction = ALLOW
+            response = getattr(netgear_enhanced, theFunction)(test, mac, theAction)
+        # If enable = y|n
+        elif enable:
+            response = getattr(netgear_enhanced, theFunction)(test, enable)
+        # if command with test, and test=true
+        elif test:
+            response = getattr(netgear_enhanced, theFunction)(test)
+        # fallback
+        else:
+            response = getattr(netgear_enhanced, theFunction)()
+
+    else:
+        print("Unknown subcommand")
+
+    return response
+
+
+def main():
     """Scan for devices and print results."""
+    args = argparser().parse_args(sys.argv[1:])
+    password = os.environ.get('PYNETGEAR_PASSWORD') or args.password
 
-    parser = argparse.ArgumentParser(description='ADD YOUR DESCRIPTION HERE')
-    parser.add_argument(
-        '-p', '--password', help='Your Password', required=True)
-    parser.add_argument(
-        '-t', '--test', help='Display response text',
-        required=False, action='store_true')
-    # ---------------------
-    # SERVICE_DEVICE_CONFIG
-    # ---------------------
-    parser.add_argument(
-        '--reboot', help='Reboot Router: '
-        'true|false', required=False)
-    parser.add_argument(
-        '--check_fw', help='Check for new firmware',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--enable_block_device', help='Enable Access Control: '
-        'true|false', required=False)
-    parser.add_argument(
-        '--block_device_status', help='Get Access Control Status',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--enable_traffic_meter', help='Enable Traffic Meter: '
-        'true|false', required=False)
-    parser.add_argument(
-        '--traffic_meter', help='Get Traffic Meter Statistics',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--traffic_meter_enabled', help='Get Traffic Meter Status',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--traffic_meter_options', help='Get Traffic Meter Options',
-        required=False, action='store_true')
-    # ---------------------
-    # SERVICE_PARENTAL_CONTROL
-    # ---------------------
-    parser.add_argument(
-        '--enable_parental_control', help='Enable Parental Control: '
-        'true|false', required=False)
-    parser.add_argument(
-        '--parental_control_status', help='Get Parental Control Status',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--mac_address', help='Get all MAC Addresses',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--dns_masq', help='Get DNS Masq Device ID',
-        required=False, action='store_true')
-    # ---------------------
-    # SERVICE_DEVICE_INFO
-    # ---------------------
-    parser.add_argument(
-        '--info', help='Get Info',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--support_feature', help='Get Supported Features',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--attached_devices', help='Get Attached Devices',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--attached_devices2', help='Get Attached Devices 2',
-        required=False, action='store_true')
-    # ---------------------
-    # SERVICE_ADVANCED_QOS
-    # ---------------------
-    parser.add_argument(
-        '--speed_test_start', help='Start Speed Test',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--speed_test_result', help='Get Speed Test Results',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--enable_qos', help='Enable QOS: '
-        'true|false', required=False)
-    parser.add_argument(
-        '--qos_enabled', help='Get QOS Status',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--bw_control', help='Get Bandwidth Control Options',
-        required=False, action='store_true')
-    # ---------------------
-    # SERVICE_WLAN_CONFIGURATION
-    # ---------------------
-    parser.add_argument(
-        '--guest_access_enable', help='Enable Guest 2.4G Wifi: '
-        'true|false', required=False)
-    parser.add_argument(
-        '--guest_access', help='Get 2G Guest Wifi Status',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--guest_access_enable2', help='Enable Guest 2.4G Wifi: '
-        'true|false', required=False)
-    # parser.add_argument(
-    #    '--guest_access2', help='get_guest_access_enabled2',
-    #    required=False, action='store_true')
-    parser.add_argument(
-        '--guest_access_enable_5g', help='Enable Guest 5G Wifi: '
-        'true|false', required=False)
-    parser.add_argument(
-        '--guest_access_5g', help='Get 5G Guest Wifi Status',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--guest_access_enable_5g1', help='Enable Guest 5G Wifi2: '
-        'true|false', required=False)
-    # parser.add_argument(
-    #    '--guest_access_5g1', help='get_5g1_guest_access_enabled_2',
-    #    required=False, action='store_true')
-    parser.add_argument(
-        '--guest_access_enable_5g2', help='Enable Guest 5G Wifi3: '
-        'true|false', required=False)
-    # parser.add_argument(
-    #    '--guest_access_5g2', help='get_5g_guest_access_enabled_2',
-    #    required=False, action='store_true')
-    parser.add_argument(
-        '--wpa_key', help='Get 2G WPA Key',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--wpa_key_5g', help='Get 5G WPA Key',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--get_2g_info', help='Get 2G Info',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--get_5g_info', help='Get 5G Info',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--guest_access_net', help='Get 2G Guest Wifi Info',
-        required=False, action='store_true')
-    parser.add_argument(
-        '--guest_access_net_5g', help='Get 5G Guest Wifi Info',
-        required=False, action='store_true')
+    netgear_enhanced = NetgearEnhanced(
+        password, args.host, args.user, args.port,
+        args.ssl, args.url, args.force_login_v2
+        )
 
-    args = parser.parse_args()
+    results = run_subcommand(netgear_enhanced, args)
+    formatter = make_formatter(args.format)
 
-    if args.password:
-        netgear = NetgearEnhanced(args.password)
-    # ---------------------
-    # SERVICE_DEVICE_CONFIG
-    # ---------------------
-    if args.reboot:
-        print(netgear.reboot(
-            args.reboot, args.test))
-    if args.check_fw:
-        print(netgear.check_new_firmware(args.test))
-    if args.enable_block_device:
-        print(netgear.set_block_device_enable(
-            args.enable_block_device, args.test))
-    if args.block_device_status:
-        print(netgear.get_block_device_enable_status(args.test))
-    if args.traffic_meter:
-        print(netgear.get_traffic_meter_statistics(args.test))
-    if args.enable_traffic_meter:
-        print(netgear.enable_traffic_meter(
-            args.enable_traffic_meter, args.test))
-    if args.traffic_meter_enabled:
-        print(netgear.get_traffic_meter_enabled(args.test))
-    if args.traffic_meter_options:
-        print(netgear.get_traffic_meter_options(args.test))
-    # ---------------------
-    # SERVICE_PARENTAL_CONTROL
-    # ---------------------
-    if args.enable_parental_control:
-        print(netgear.enable_parental_control(
-            args.enable_parental_control, args.test))
-    if args.parental_control_status:
-        print(netgear.get_parental_control_enable_status(args.test))
-    if args.mac_address:
-        print(netgear.get_all_mac_addresses(args.test))
-    if args.dns_masq:
-        print(netgear.get_dns_masq_device_id(args.test))
-    # ---------------------
-    # SERVICE_DEVICE_INFO
-    # ---------------------
-    if args.info:
-        print(netgear.get_info(args.test))
-    if args.support_feature:
-        print(netgear.get_support_feature_list_XML(args.test))
-    if args.attached_devices:
-        print(netgear.get_attached_devices(args.test))
-    if args.attached_devices2:
-        print(netgear.get_attached_devices_2(args.test))
-    # ---------------------
-    # SERVICE_ADVANCED_QOS
-    # ---------------------
-    if args.speed_test_start:
-        print(netgear.set_speed_test_start(args.test))
-        time.sleep(30)
-        print(netgear.get_speed_test_result(args.test))
-    if args.speed_test_result:
-        print(netgear.get_speed_test_result(args.test))
-    if args.enable_qos:
-        print(netgear.set_qos_enable_status(
-            args.enable_qos, args.test))
-    if args.qos_enabled:
-        print(netgear.get_qos_enable_status(args.test))
-    if args.bw_control:
-        print(netgear.get_bandwidth_control_options(args.test))
-    # ---------------------
-    # SERVICE_WLAN_CONFIGURATION
-    # ---------------------
-    if args.guest_access_enable:
-        print(netgear.set_guest_access_enabled(
-            args.guest_access_enable, args.test))
-    if args.guest_access:
-        print(netgear.get_guest_access_enabled(args.test))
-    if args.guest_access_enable2:
-        print(netgear.set_guest_access_enabled_2(
-            args.guest_access_enable_2, args.test))
-    # if args.guest_access2:
-    #    print(netgear.get_guest_access_enabled2(args.test))
-    if args.guest_access_enable_5g:
-        print(netgear.set_5g_guest_access_enabled(
-            args.guest_access_enable_5g, args.test))
-    if args.guest_access_5g:
-        print(netgear.get_5g_guest_access_enabled(args.test))
-    if args.guest_access_enable_5g1:
-        print(netgear.set_5g_guest_access_enabled_2(
-            args.guest_access_enable_5g1, args.test))
-    # if args.guest_access_5g1:
-    #    print(netgear.get_5g1_guest_access_enabled_2(args.test))
-    if args.guest_access_enable_5g2:
-        print(netgear.set_5g1_guest_access_enabled_2(
-            args.guest_access_enable_5g2, args.test))
-    # if args.guest_access_5g2:
-    #    print(netgear.get_5g_guest_access_enabled_2(args.test))
-    if args.wpa_key:
-        print(netgear.get_wpa_security_keys(args.test))
-    if args.wpa_key_5g:
-        print(netgear.get_5g_wpa_security_keys(args.test))
-    if args.get_2g_info:
-        print(netgear.get_2g_info(args.test))
-    if args.get_5g_info:
-        print(netgear.get_5g_info(args.test))
-    if args.guest_access_net:
-        print(netgear.get_guest_access_network_info(args.test))
-    if args.guest_access_net_5g:
-        print(netgear.get_5g_guest_access_network_info(args.test))
+    if results is None:
+        print("Error communicating with the Netgear router")
 
-    # does not work
-    # print(netgear.get_current_app_bandwidth(args.test))
-    # print(netgear.get_current_device_bandwidth(args.test))
-    # print(netgear.get_current_app_bandwidth_by_mac(args.test))
-    # print(netgear.get_available_channel(args.test))
+    else:
+        formatter(results)
 
 
 if __name__ == '__main__':

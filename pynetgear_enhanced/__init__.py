@@ -12,7 +12,7 @@ from . import helpers as h
 _LOGGER = logging.getLogger(__name__)
 
 Device = namedtuple(
-    "Device", ["signal", "ip", "name", "mac", "type", "link_rate",
+    "Device", ["name", "ip", "mac", "type", "signal", "link_rate",
                "allow_or_block", "device_type", "device_model",
                "ssid", "conn_ap_mac"])
 
@@ -21,7 +21,7 @@ class NetgearEnhanced():
     """Represents a session to a Netgear Router."""
 
     def __init__(self, password=None, host=None, user=None, port=None,  # noqa
-                 ssl=False, url=None):
+                 ssl=False, url=None, force_login_v2=False):
         """Initialize a Netgear session."""
         if not url and not host and not port:
             url = h.autodetect_url()
@@ -43,6 +43,7 @@ class NetgearEnhanced():
         self.username = user
         self.password = password
         self.port = port
+        self.force_login_v2 = force_login_v2
         self.cookie = None
         self.config_started = False
 
@@ -55,9 +56,10 @@ class NetgearEnhanced():
 
         Will be called automatically by other actions.
         """
-        v1_result = self.login_v1()
-        if v1_result:
-            return v1_result
+        if not self.force_login_v2:
+            v1_result = self.login_v1()
+            if v1_result:
+                return v1_result
 
         return self.login_v2()
 
@@ -104,7 +106,6 @@ class NetgearEnhanced():
                 # print(response.text)
                 # exit(0)
                 return True, response
-
             if need_auth and h.is_unauthorized_response(response):
                 # let's discard the cookie because it probably expired (v2)
                 # or the IP-bound (?) session expired (v1)
@@ -132,11 +133,20 @@ class NetgearEnhanced():
 
             return success, response
 
-        except requests.exceptions.RequestException:
-            _LOGGER.exception("Error talking to API")
+        except requests.exceptions.SSLError:
+            _LOGGER.exception("SSL Error. Try --no-ssl")
+
+        except requests.exceptions.HTTPError as e:
+            _LOGGER.exception('HTTP error: %s', e)
+
+        except requests.exceptions.RequestException as e:
+            _LOGGER.exception('Connection error: %s', e)
+            # _LOGGER.exception("Error talking to API")
+
             # Maybe one day we will distinguish between
             # different errors..
-            return False, None
+
+        return False, None
 
     def _get(self, theLog, theService, theEndpoint,  # noqa
              parseNode, toParse, test=False):
@@ -231,7 +241,7 @@ class NetgearEnhanced():
 
     # def logout(self):
 
-    def reboot(self, value, test=False):
+    def reboot(self, test=False, value='0'):
         """Reboot Router."""
         theLog = {}
         theLog[0] = "Rebooting Router"
@@ -268,6 +278,27 @@ class NetgearEnhanced():
 
     # def update_new_firmware(self):
 
+    # **NEW**
+    # Response is GetInfo
+    def check_app_new_firmware(self, test=False):
+        """Parse CheckAppNewFirmware and return dict."""
+        theLog = "Check for new firmware"
+        parseNode = f".//{c.GET_DEVICE_CONFIG_INFO}Response"
+        toParse = [
+            'BlankState',
+            'NewBlockSiteEnable',
+            'NewBlockSiteName',
+            'NewTimeZone',
+            'NewDaylightSaving'
+        ]
+
+        theInfo = self._get(
+            theLog, c.SERVICE_DEVICE_CONFIG,
+            c.CHECK_APP_NEW_FIRMWARE, parseNode, toParse, test
+            )
+
+        return theInfo
+
     def config_start(self):
         """
         Start a configuration session.
@@ -302,6 +333,26 @@ class NetgearEnhanced():
         self.config_started = not success
         return success
 
+    # **NEW**
+    def get_device_config_info(self, test=False):
+        """Parse Device Config GetInfo and return dict."""
+        theLog = "Get DeviceConfig Info"
+        parseNode = f".//{c.GET_DEVICE_CONFIG_INFO}Response"
+        toParse = [
+            'BlankState',
+            'NewBlockSiteEnable',
+            'NewBlockSiteName',
+            'NewTimeZone',
+            'NewDaylightSaving'
+        ]
+
+        theInfo = self._get(
+            theLog, c.SERVICE_DEVICE_CONFIG,
+            c.GET_DEVICE_CONFIG_INFO, parseNode, toParse, test
+            )
+
+        return theInfo
+
     def get_block_device_enable_status(self, test=False):
         """Parse GetBlockDeviceEnableStatus and return dict."""
         theLog = "Get Block Device Enable Status"
@@ -315,7 +366,7 @@ class NetgearEnhanced():
 
         return theInfo
 
-    def set_block_device_enable(self, value, test=False):
+    def set_block_device_enable(self, test=False, value='0'):
         """Set SetBlockDeviceEnable."""
         theLog = {}
         theLog[0] = "Setting Block Device Enabled"
@@ -335,7 +386,7 @@ class NetgearEnhanced():
 
     # def enable_block_device_for_all(self):
 
-    def set_block_device_by_mac(self, mac_addr,
+    def set_block_device_by_mac(self, test=False, mac_addr=None,
                                 device_status=c.BLOCK):
         """
         Allow or Block a device via its Mac Address.
@@ -345,34 +396,24 @@ class NetgearEnhanced():
         (allow device to access the network) or Block (block the device
         from accessing the network).
         """
-        _LOGGER.info("Allow block device")
-        if self.config_started:
-            _LOGGER.error(
-                "Inconsistant configuration state, "
-                "configuration already started"
-                )
-            return False
+        theLog = {}
+        theLog[0] = "Allow block device"
+        theLog[1] = "Could not successfully call allow/block device"
+        theRequest = {
+            "service": c.SERVICE_DEVICE_CONFIG,
+            "method": c.SET_BLOCK_DEVICE_BY_MAC,
+            "params": {
+                "NewAllowOrBlock": device_status,
+                "NewMACAddress": mac_addr},
+            "body": "",
+            "need_auth": True
+        }
 
-        if not self.config_start():
-            _LOGGER.error("Could not start configuration")
-            return False
+        theResponse = False
+        if mac_addr:
+            theResponse = self._set(theLog, theRequest, test)
 
-        success, _ = self._make_request(
-            c.SERVICE_DEVICE_CONFIG, c.SET_BLOCK_DEVICE_BY_MAC,
-            {"NewAllowOrBlock": device_status, "NewMACAddress": mac_addr})
-
-        if not success:
-            _LOGGER.error("Could not successfully call allow/block device")
-            return False
-
-        if not self.config_finish():
-            _LOGGER.error(
-                "Inconsistant configuration state, "
-                "configuration already finished"
-                )
-            return False
-
-        return True
+        return theResponse
 
     def get_traffic_meter_enabled(self, test=False):
         """Parse GetTrafficMeterEnabled and return dict."""
@@ -437,7 +478,7 @@ class NetgearEnhanced():
 
         return {t: h.parse_text(value) for t, value in theInfo.items()}
 
-    def enable_traffic_meter(self, value, test=False):
+    def enable_traffic_meter(self, test=False, value='0'):
         """Set EnableTrafficMeter."""
         theLog = {}
         theLog[0] = "Enabling Traffic Meter"
@@ -456,6 +497,58 @@ class NetgearEnhanced():
         return theResponse
 
     # def set_traffic_meter_options(self):
+
+    ##########################################################################
+    # SERVICE_LAN_CONFIG_SECURITY
+    ##########################################################################
+    # **NEW**
+    def get_lan_config_sec_info(self, test=False):
+        """Parse LANConfigSecurity Info and return dict."""
+        theLog = "Get LANConfigSecurity Info"
+        parseNode = f".//{c.GET_LAN_CONFIG_SEC_INFO}Response"
+        toParse = [
+            'NewLANSubnet',
+            'NewWANLAN_Subnet_Match',
+            'NewLANMACAddress',
+            'NewLANIP',
+            'NewDHCPEnabled'
+        ]
+
+        theInfo = self._get(
+            theLog, c.SERVICE_LAN_CONFIG_SECURITY,
+            c.GET_LAN_CONFIG_SEC_INFO, parseNode, toParse, test
+            )
+
+        return theInfo
+
+    ##########################################################################
+    # SERVICE_WAN_IP_CONNECTION
+    ##########################################################################
+    # **NEW**
+    def get_wan_ip_con_info(self, test=False):
+        """Parse WANIPConnection Info and return dict."""
+        theLog = "Get WANIPConnection Info"
+        parseNode = f".//{c.GET_WAN_IP_CON_INFO}Response"
+        toParse = [
+            'NewEnable',
+            'NewConnectionType',
+            'NewExternalIPAddress',
+            'NewSubnetMask',
+            'NewAddressingType',
+            'NewDefaultGateway',
+            'NewMACAddress',
+            'NewMACAddressOverride',
+            'NewMaxMTUSize',
+            'NewDNSEnabled',
+            'NewDNSServers'
+        ]
+
+        theInfo = self._get(
+            theLog, c.SERVICE_WAN_IP_CONNECTION,
+            c.GET_WAN_IP_CON_INFO, parseNode, toParse, test
+            )
+
+        return theInfo
 
     ##########################################################################
     # SERVICE_PARENTAL_CONTROL
@@ -489,7 +582,7 @@ class NetgearEnhanced():
 
         return theInfo
 
-    def enable_parental_control(self, value, test=False):
+    def enable_parental_control(self, test=False, value='0'):
         """Set EnableParentalControl."""
         theLog = {}
         theLog[0] = "Enabling Parental Control"
@@ -607,9 +700,8 @@ class NetgearEnhanced():
         devices = []
 
         # Netgear inserts a double-encoded value for "unknown" devices
-        decoded = node.text.strip().replace(
-            c.UNKNOWN_DEVICE_ENCODED, c.UNKNOWN_DEVICE_DECODED
-            )
+        decoded = node.text.strip().replace(c.UNKNOWN_DEVICE_ENCODED,
+                                            c.UNKNOWN_DEVICE_DECODED)
 
         if not decoded or decoded == "0":
             _LOGGER.error("Can't parse attached devices string")
@@ -653,8 +745,8 @@ class NetgearEnhanced():
 
             ipv4, name, mac = info[1:4]
 
-            devices.append(Device(signal, ipv4, name, mac,
-                                  link_type, link_rate, allow_or_block,
+            devices.append(Device(name, ipv4, mac,
+                                  link_type, signal, link_rate, allow_or_block,
                                   None, None, None, None))
 
         return devices
@@ -694,13 +786,14 @@ class NetgearEnhanced():
             device_model = h.xml_get(d, 'DeviceModel')
             ssid = h.xml_get(d, 'SSID')
             conn_ap_mac = h.xml_get(d, 'ConnAPMAC')
-            devices.append(Device(signal, ip, name, mac, link_type, link_rate,
+            devices.append(Device(name, ip, mac, link_type, signal, link_rate,
                                   allow_or_block, device_type, device_model,
                                   ssid, conn_ap_mac))
 
         return devices
 
     # def set_device_name_icon_by_mac(self):
+    # def set_device_name(self):
 
     ##########################################################################
     # SERVICE_ADVANCED_QOS
@@ -755,7 +848,7 @@ class NetgearEnhanced():
 
         return theInfo
 
-    def set_qos_enable_status(self, value, test=False):
+    def set_qos_enable_status(self, test=False, value='0'):
         """Set SetQoSEnableStatus."""
         theLog = {}
         theLog[0] = "Setting Guest Access Enabled"
@@ -900,7 +993,7 @@ class NetgearEnhanced():
 
         return theInfo
 
-    def set_guest_access_enabled(self, value, test=False):
+    def set_guest_access_enabled(self, test=False, value='0'):
         """Set SetGuestAccessEnabled."""
         theLog = {}
         theLog[0] = "Setting Guest Access Enabled"
@@ -918,7 +1011,7 @@ class NetgearEnhanced():
 
         return theResponse
 
-    def set_guest_access_enabled_2(self, value, test=False):
+    def set_guest_access_enabled_2(self, test=False, value='0'):
         """Set SetGuestAccessEnabled2."""
         theLog = {}
         theLog[0] = "Setting Guest Access Enabled"
@@ -936,7 +1029,7 @@ class NetgearEnhanced():
 
         return theResponse
 
-    def set_5g_guest_access_enabled(self, value, test=False):
+    def set_5g_guest_access_enabled(self, test=False, value='0'):
         """Set Set5GGuestAccessEnabled."""
         theLog = {}
         theLog[0] = "Setting 5G Guest Access Enabled"
@@ -954,7 +1047,7 @@ class NetgearEnhanced():
 
         return theResponse
 
-    def set_5g_guest_access_enabled_2(self, value, test=False):
+    def set_5g_guest_access_enabled_2(self, test=False, value='0'):
         """Set Set5GGuestAccessEnabled2."""
         theLog = {}
         theLog[0] = "Setting 5G Guest Access Enabled"
@@ -972,7 +1065,7 @@ class NetgearEnhanced():
 
         return theResponse
 
-    def set_5g1_guest_access_enabled_2(self, value, test=False):
+    def set_5g1_guest_access_enabled_2(self, test=False, value='0'):
         """Set Set5G1GuestAccessEnabled2."""
         theLog = {}
         theLog[0] = "Setting 5G Guest Access Enabled"
@@ -1072,8 +1165,20 @@ class NetgearEnhanced():
     def get_available_channel(self, test=False):
         """Parse GetAvailableChannel and return dict."""
         theLog = "Get Available Channel"
-        parseNode = f".//{c.GET_AVAILABLE_CHANNEL}Response"
-        toParse = []
+        parseNode = f".//{c.GET_2G_INFO}Response"
+        toParse = [
+            'NewEnable',
+            'NewSSIDBroadcast',
+            'NewStatus',
+            'NewSSID',
+            'NewRegion',
+            'NewChannel',
+            'NewWirelessMode',
+            'NewBasicEncryptionModes',
+            'NewWEPAuthType',
+            'NewWPAEncryptionModes',
+            'NewWLANMACAddress',
+        ]
 
         theInfo = self._get(
             theLog, c.SERVICE_WLAN_CONFIGURATION, c.GET_AVAILABLE_CHANNEL,
@@ -1120,3 +1225,20 @@ class NetgearEnhanced():
             )
 
         return theInfo
+
+    # **NEW**
+    def get_smart_connect_enabled(self, test=False):
+        """Parse IsSmartConnectEnabled and return dict."""
+        theLog = "Get Smart Connect Status"
+        parseNode = f".//{c.GET_SMART_CONNECT_ENABLED}Response"
+        toParse = ['NewSmartConnectEnable']
+        theInfo = self._get(
+            theLog, c.SERVICE_WLAN_CONFIGURATION,
+            c.GET_SMART_CONNECT_ENABLED, parseNode, toParse, test
+            )
+
+        return theInfo
+
+    # **NEW**
+    # def set_smart_connect_enabled(self, test=False, value='0'):
+    # SET_SMART_CONNECT_ENABLED
