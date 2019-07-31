@@ -5,12 +5,12 @@ with open("README.md", "r") as fh:
 
 setup(
       name='pynetgear_enhanced',
-      version='0.2.1',
+      version='0.2.2',
       description='Access Netgear routers using their SOAP API',
       long_description=long_description,
       long_description_content_type="text/markdown",
       url='http://github.com/roblandry/pynetgear_enhanced',
-      download_url='http://github.com/roblandry/pynetgear_enhanced/archive/v0.2.1.tar.gz',
+      download_url='http://github.com/roblandry/pynetgear_enhanced/archive/v0.2.2.tar.gz',
       author='Rob Landry',
       author_email='rob@landry.me',
       license='MIT',
